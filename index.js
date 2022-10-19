@@ -55,23 +55,24 @@ function getBrazilianTime() {
 }
 
 /** Express functions  */
-app.get('/', (req, res) => {
-    console.log("test test test")
+app.get('/', (req, res) => {    
     res.send('Bot is running to sent you a message when your jersey is available');
+
+    /** Scheduled task to be run on the server every 5 min. */
+    cron.schedule('*/5 * * * *', function () {
+        scrapProduct();
+    });
+
+    /** Check if the server is still running every 1 hour.*/
+    cron.schedule("0 */1 * * *", () => {
+        sendWhatsAppMessage('Bot still is running');
+        console.log("Bot still is running");
+    });
+
+    console.log("cron called");
 });
 
 app.listen(port, function (err) {
     if (err) console.log("Error in server setup")
     console.log("Server listening on Port", port);
-});
-
-/** Scheduled task to be run on the server every 5 min. */
-cron.schedule('*/5 * * * *', function () {
-    scrapProduct();
-});
-
-/** Check if the server is still running every 1 hour.*/
-cron.schedule("0 */1 * * *", () => {
-    sendWhatsAppMessage('Bot still is running');
-    console.log("Bot still is running");
 });
