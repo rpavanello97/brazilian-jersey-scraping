@@ -56,6 +56,7 @@ function getBrazilianTime() {
 
 /** Express functions  */
 app.get('/', (req, res) => {
+    console.log("test test test")
     res.send('Bot is running to sent you a message when your jersey is available');
 });
 
