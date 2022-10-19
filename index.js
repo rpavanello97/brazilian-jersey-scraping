@@ -4,7 +4,7 @@ const cron = require('node-cron');
 const express = require("express");
 
 const app = express();
-const port = process.env.PORT;
+const port = process.env.PORT || 5050
 const accountSid = process.env.TWILIO_SID;
 const authToken = process.env.TWILIO_TOKEN;
 const client = require('twilio')(accountSid, authToken);
