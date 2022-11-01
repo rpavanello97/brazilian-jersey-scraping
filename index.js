@@ -15,6 +15,10 @@ const targetProductDescription = process.env.NIKE_JEYSEY_DESCRIPTION;
 
 async function scrapProduct() {
     try {
+        /** Axios config */
+        axios.defaults.timeout = 30000;
+        axios.defaults.httpsAgent = new https.Agent({ keepAlive: true });
+
         const response = await axios.get(url);
         const $ = cheerio.load(response.data);
         const products = $(".ProductCardstyled__ProductCardContainer-sc-1t3m0gl-5");
@@ -55,11 +59,11 @@ function getBrazilianTime() {
 }
 
 /** Express functions  */
-app.get('/', (req, res) => {    
+app.get('/', (req, res) => {
     res.send('Bot is running to sent you a message when your jersey is available');
 
     /** Scheduled task to be run on the server every 5 min. */
-    cron.schedule('*/5 * * * *', function () {
+    cron.schedule('*/2 * * * *', function () {
         scrapProduct();
     });
 
