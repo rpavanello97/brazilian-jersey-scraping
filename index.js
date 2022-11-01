@@ -1,7 +1,9 @@
 const cheerio = require('cheerio');
 const axios = require('axios');
 const cron = require('node-cron');
-const express = require("express");
+const express = require('express');
+const http = require('http');
+const httpAgent = new http.Agent({ keepAlive: true });
 
 const app = express();
 const port = process.env.PORT || 5050
@@ -14,12 +16,9 @@ const arrayProducts = [];
 const targetProductDescription = process.env.NIKE_JEYSEY_DESCRIPTION;
 
 async function scrapProduct() {
-    try {
-        /** Axios config */
-        axios.defaults.timeout = 30000;
-        axios.defaults.httpsAgent = new https.Agent({ keepAlive: true });
+    try {   
 
-        const response = await axios.get(url);
+        const response = await axios.get(url, { httpAgent });
         const $ = cheerio.load(response.data);
         const products = $(".ProductCardstyled__ProductCardContainer-sc-1t3m0gl-5");
 
