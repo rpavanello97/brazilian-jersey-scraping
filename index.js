@@ -2,8 +2,7 @@ const cheerio = require('cheerio');
 const axios = require('axios');
 const cron = require('node-cron');
 const express = require('express');
-const http = require('http');
-const httpAgent = new http.Agent({ keepAlive: true });
+const https = require('https');
 
 const app = express();
 const port = process.env.PORT || 5050
@@ -15,10 +14,17 @@ const url = process.env.NIKE_PRODUCTS_URL;
 const arrayProducts = [];
 const targetProductDescription = process.env.NIKE_JEYSEY_DESCRIPTION;
 
-async function scrapProduct() {
-    try {   
+/** Creating axios instance */
+const instance = axios.create({
+    baseURL: url,
+    timeout: 60000, 
+    httpsAgent: new https.Agent({ keepAlive: true }),
+    headers: { 'Content-Type': 'application/json' }
+});
 
-        const response = await axios.get(url, { httpAgent });
+async function scrapProduct() {
+    try {
+        const response = await instance.get('');
         const $ = cheerio.load(response.data);
         const products = $(".ProductCardstyled__ProductCardContainer-sc-1t3m0gl-5");
 
@@ -26,9 +32,10 @@ async function scrapProduct() {
             description = $(this).find(".Typographystyled__StyledParagraph-sc-1h4c8w0-2").first().text();
             arrayProducts.push(description);
         });
-
-        if (arrayProducts.includes(targetProductDescription))
+        
+        if (arrayProducts.includes(targetProductDescription)) {
             sendWhatsAppMessage(targetProductDescription + " está disponível carai!!!");
+        }            
     } catch (error) {
         console.log(error);
     }
@@ -62,7 +69,7 @@ app.get('/', (req, res) => {
     res.send('Bot is running to sent you a message when your jersey is available');
 
     /** Scheduled task to be run on the server every 5 min. */
-    cron.schedule('*/2 * * * *', function () {
+    cron.schedule('*/1 * * * *', function () {
         scrapProduct();
     });
 
@@ -77,5 +84,5 @@ app.get('/', (req, res) => {
 
 app.listen(port, function (err) {
     if (err) console.log("Error in server setup")
-    console.log("Server listening on Port", port);
+    console.log("Server listening on localhost.com:"+port);
 });
