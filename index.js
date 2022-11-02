@@ -15,7 +15,8 @@ const targetProductDescription = process.env.NIKE_JEYSEY_DESCRIPTION;
 async function scrapProduct() {
     try {
         console.log('scrap product started...');
-        const instance = new getAxios();
+        const instance = null;
+        instance = getAxios();
         const response = await instance.get();
 
         console.log('scrap product finished...');
