@@ -17,7 +17,7 @@ const targetProductDescription = process.env.NIKE_JEYSEY_DESCRIPTION;
 /** Creating axios instance */
 const instance = axios.create({
     baseURL: url,
-    timeout: 60000, 
+    timeout: 420000,
     httpsAgent: new https.Agent({ keepAlive: true }),
     headers: { 'Content-Type': 'application/json' }
 });
