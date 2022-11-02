@@ -1,7 +1,7 @@
 const cheerio = require('cheerio');
 const cron = require('node-cron');
 const express = require('express');
-const instance = require('./getAxios')();
+const getAxios = require('./getAxios');
 
 const app = express();
 const port = process.env.PORT || 5050
@@ -16,7 +16,7 @@ async function scrapProduct() {
     try {
         console.log('scrap product started...');
         
-        const response = await instance.get();
+        const response = await getAxios().get();
 
         console.log('scrap product finished...');
 
