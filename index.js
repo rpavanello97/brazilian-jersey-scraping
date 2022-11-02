@@ -64,7 +64,7 @@ app.get('/', (req, res) => {
     res.send('Bot is running to sent you a message when your jersey is available');
 
     /** Scheduled task to be run on the server every 5 min. */
-    cron.schedule('*/1 * * * *', function () {
+    cron.schedule('*/3 * * * *', function () {
         scrapProduct();
     });
 
