@@ -1,7 +1,7 @@
 const cheerio = require('cheerio');
 const cron = require('node-cron');
 const express = require('express');
-const getAxios = require('./getAxios');
+const getAxios = require('./getAxios')();
 
 const app = express();
 const port = process.env.PORT || 5050
@@ -15,9 +15,8 @@ const targetProductDescription = process.env.NIKE_JEYSEY_DESCRIPTION;
 async function scrapProduct() {
     try {
         console.log('scrap product started...');
-        let instance = null;
-        instance = getAxios();
-        const response = await instance.get();
+
+        const response = await getAxios.get();
 
         console.log('scrap product finished...');
 
@@ -80,5 +79,5 @@ app.get('/', (req, res) => {
 
 app.listen(port, function (err) {
     if (err) console.log("Error in server setup")
-    console.log("Server listening on localhost.com:" + port);
+    console.log("Server listening on https://localhost:" + port);
 });
