@@ -1,8 +1,7 @@
 const cheerio = require('cheerio');
-const axios = require('axios');
 const cron = require('node-cron');
 const express = require('express');
-const https = require('https');
+const instance = require('./getAxios')();
 
 const app = express();
 const port = process.env.PORT || 5050
@@ -10,21 +9,17 @@ const accountSid = process.env.TWILIO_SID;
 const authToken = process.env.TWILIO_TOKEN;
 const client = require('twilio')(accountSid, authToken);
 
-const url = process.env.NIKE_PRODUCTS_URL;
 const arrayProducts = [];
 const targetProductDescription = process.env.NIKE_JEYSEY_DESCRIPTION;
 
-/** Creating axios instance */
-const instance = axios.create({
-    baseURL: url,
-    timeout: 420000,
-    httpsAgent: new https.Agent({ keepAlive: true }),
-    headers: { 'Content-Type': 'application/json' }
-});
-
 async function scrapProduct() {
     try {
-        const response = await instance.get('');
+        console.log('scrap product started...');
+        
+        const response = await instance.get();
+
+        console.log('scrap product finished...');
+
         const $ = cheerio.load(response.data);
         const products = $(".ProductCardstyled__ProductCardContainer-sc-1t3m0gl-5");
 
@@ -32,10 +27,10 @@ async function scrapProduct() {
             description = $(this).find(".Typographystyled__StyledParagraph-sc-1h4c8w0-2").first().text();
             arrayProducts.push(description);
         });
-        
+
         if (arrayProducts.includes(targetProductDescription)) {
             sendWhatsAppMessage(targetProductDescription + " está disponível carai!!!");
-        }            
+        }
     } catch (error) {
         console.log(error);
     }
@@ -84,5 +79,5 @@ app.get('/', (req, res) => {
 
 app.listen(port, function (err) {
     if (err) console.log("Error in server setup")
-    console.log("Server listening on localhost.com:"+port);
+    console.log("Server listening on localhost.com:" + port);
 });
